@@ -16,6 +16,7 @@
     --font-family-sans: 'Inter', sans-serif;
     --font-size-base: 16px;
     --border-radius-base: 8px;
+    --padding-base: 15px; /* Добавил базовый паддинг для удобства */
 }
 
 /* Общие стили */
@@ -35,10 +36,13 @@ body {
 
 h1, h2, h3 {
     font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
 }
 
 /* --- Стили для лоадера --- */
-#loader {
+#loader-wrapper { /* Изменил ID с #loader для соответствия HTML */
     position: fixed;
     top: 0;
     left: 0;
@@ -50,10 +54,15 @@ h1, h2, h3 {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-.spinner {
+#loader-wrapper.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader { /* Изменил класс с .spinner для соответствия HTML */
     width: 56px;
     height: 56px;
     border: 7px solid var(--primary-color);
@@ -65,7 +74,7 @@ h1, h2, h3 {
     margin-bottom: 20px;
 }
 
-#loader p {
+#loader-wrapper p { /* Изменил ID для соответствия HTML */
     font-size: 1.2em;
     color: var(--primary-dark);
 }
@@ -83,7 +92,7 @@ h1, h2, h3 {
     padding: 20px;
     gap: 20px;
     max-width: 100%;
-    margin: 0;
+    margin: 0; /* Центрирование контейнера */
     box-sizing: border-box;
 }
 
@@ -91,7 +100,7 @@ h1, h2, h3 {
 header {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: white;
-    padding: 25px 20px;
+    padding: 25px var(--padding-base); /* Использование переменной */
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -135,7 +144,8 @@ header p {
     margin-bottom: 20px;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: 40vh;
+    max-height: 40vh; /* Относительная высота для адаптации */
+    padding-right: 5px; /* Для скроллбара */
 }
 
 /* --- Улучшенные чекбоксы --- */
@@ -216,8 +226,74 @@ header p {
     outline: none;
 }
 
+/* --- Секция добавления наставника (форма) --- */
+.add-mentor-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.add-mentor-section h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box;
+    font-family: var(--font-family-sans);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="url"]:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.2);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.compact-grid { /* Сетка для чекбоксов ценностей в форме */
+    max-height: 150px; /* Ограничение высоты */
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #fcfcfc;
+    margin-top: 5px;
+}
 
 /* --- Улучшенные кнопки --- */
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto; /* Прижимает к низу сайдбара */
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
 .flat-button {
     padding: 12px 20px;
     border: none;
@@ -259,7 +335,7 @@ header p {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 400px;
+    min-height: 400px; /* Минимальная высота для десктопа */
     width: 100%;
     box-sizing: border-box;
 }
@@ -271,7 +347,7 @@ header p {
 }
 
 /* D3.js Graph Styles */
-.links line {
+.links path { /* ИЗМЕНЕНО: теперь применяется к элементам <path> */
     stroke: #999;
     stroke-opacity: 0.6;
 }
@@ -303,24 +379,25 @@ header p {
 
 /* Модальные окна (Modal) */
 .modal {
-    display: none; /* Изменено JS */
+    display: flex; /* По умолчанию flex, для центрирования */
     position: fixed;
     z-index: 1001;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto; /* Изменил на auto, чтобы контент модала мог скроллиться */
     background-color: rgba(0,0,0,0.6);
-    display: flex;
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden; /* Добавил visibility для плавного скрытия */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .modal.show {
     opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
@@ -331,7 +408,7 @@ header p {
     width: 90%;
     max-width: 700px;
     position: relative;
-    max-height: 90vh;
+    max-height: 90vh; /* Максимальная высота от viewport height */
     overflow-y: auto;
     transform: scale(0.95);
     transition: transform 0.3s ease;
@@ -411,12 +488,115 @@ header p {
 
 /* --- Адаптивность --- */
 @media (max-width: 992px) {
-    .container { flex-direction: column; }
-    .sidebar { width: 100%; flex: auto; }
+    .container {
+        flex-direction: column;
+        padding: 15px; /* Уменьшаем паддинг контейнера */
+        gap: 15px;
+    }
+    .sidebar {
+        width: 100%;
+        flex: auto;
+        padding: 20px; /* Уменьшаем паддинг сайдбара */
+    }
+    header {
+        padding: 20px var(--padding-base); /* Корректируем паддинг хедера */
+    }
+    .main-content {
+        min-height: 500px; /* Увеличиваем минимальную высоту для планшетов */
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    header p {
+        font-size: 1em;
+    }
+    .sidebar h2 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+    .filters-grid {
+        max-height: 35vh; /* Более подходящая высота для фильтров на мобильных */
+    }
+    .add-mentor-section h2 {
+        font-size: 1.3em;
+    }
+    .form-group label {
+        font-size: 0.9em;
+    }
+    .form-group input, .form-group textarea {
+        padding: 10px 12px; /* Меньше паддинг для полей формы */
+    }
+    .compact-grid {
+        max-height: 120px; /* Меньше высота для чекбоксов в форме */
+        padding: 8px;
+    }
+    .flat-button {
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+    .modal-content {
+        padding: 20px; /* Уменьшаем паддинг модального окна */
+    }
+    .close-button {
+        font-size: 28px;
+        top: 8px;
+        right: 15px;
+    }
+    .mentor-card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .mentor-card-photo {
+        width: 80px;
+        height: 80px;
+        border-width: 3px;
+    }
+    #mentorCardFIO {
+        font-size: 1.8em;
+    }
+    .card-label {
+        margin-bottom: 5px;
+    }
+    .values-grid {
+        justify-content: center; /* Центрируем теги */
+    }
+    .value-tag {
+        font-size: 0.8em;
+        padding: 5px 10px;
+    }
 }
 
 @media (max-width: 576px) {
-    header h1 { font-size: 2em; }
-    .mentor-card-header { flex-direction: column; text-align: center; }
-    #mentorCardFIO { font-size: 1.6em; }
+    body {
+        font-size: 15px; /* Базовый размер шрифта для самых маленьких экранов */
+    }
+    header h1 {
+        font-size: 1.8em;
+    }
+    header p {
+        font-size: 0.9em;
+    }
+    .container {
+        padding: 10px;
+        gap: 10px;
+    }
+    .sidebar {
+        padding: 15px;
+    }
+    .main-content {
+        min-height: 350px; /* Минимальная высота для SVG на самых маленьких экранах */
+    }
+    .filters-grid {
+        max-height: 30vh;
+    }
+    .compact-grid {
+        max-height: 100px;
+    }
+    .modal-content {
+        padding: 15px;
+    }
 }

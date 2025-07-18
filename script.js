@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const descriptionBtn = document.getElementById('descriptionBtn');
     const mentorSearchInput = document.getElementById('mentorSearchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
-    
+
     const g = svg.append("g");
     const tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalElement.classList.remove('show');
         setTimeout(() => modalElement.style.display = 'none', 300);
     };
-    
+
     /**
      * КЛЮЧЕВАЯ ФУНКЦИЯ: Инициализация данных с объединением дубликатов.
      */
@@ -176,11 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         link = g.append("g")
             .attr("class", "links")
-            .selectAll("line")
+            .selectAll("path") // Изменено с "line" на "path"
             .data(filteredLinks)
-            .enter().append("line")
+            .enter().append("path") // Изменено с "line" на "path"
             .attr("stroke-width", d => d.strokeWidth)
-            .attr("stroke-dasharray", d => d.isPrimary ? "0" : "5,5");
+            .attr("stroke-dasharray", d => d.isPrimary ? "0" : "5,5")
+            .attr("fill", "none"); // Arcs should typically not be filled
 
         node = g.append("g")
             .attr("class", "nodes")
@@ -210,19 +211,50 @@ document.addEventListener('DOMContentLoaded', () => {
             .text(d => d.name)
             .style("font-size", d => d.type === 'value' ? "12px" : "10px")
             .style("font-weight", d => d.type === 'value' ? "bold" : "normal");
-        
+
         node.call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
 
         node.on("mouseover", handleMouseOver).on("mouseout", handleMouseOut).on("click", handleClick);
-        
+
         simulation.alpha(1).restart();
     }
-    
+
     // --- Остальные функции (без изменений) ---
 
     function ticked() {
-        link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+        link.attr("d", d => {
+            const x1 = d.source.x;
+            const y1 = d.source.y;
+            const x2 = d.target.x;
+            const y2 = d.target.y;
+
+            // Середина линии
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2;
+
+            // Вектор от источника к цели
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            // Перпендикулярный вектор для направления изгиба
+            // (dy, -dx) для одного направления, (-dy, dx) для другого
+            const normalDx = dy;
+            const normalDy = -dx;
+
+            // Нормализация перпендикулярного вектора
+            const length = Math.sqrt(normalDx * normalDx + normalDy * normalDy);
+            const unitNormalDx = length === 0 ? 0 : normalDx / length;
+            const unitNormalDy = length === 0 ? 0 : normalDy / length;
+
+            // Фактор изгиба - отрегулируйте это значение для большей или меньшей кривизны
+            const bend = 30; // в пикселях
+
+            // Контрольная точка для квадратичной кривой Безье
+            const controlX = midX + unitNormalDx * bend;
+            const controlY = midY + unitNormalDy * bend;
+
+            return `M ${x1},${y1} Q ${controlX},${controlY} ${x2},${y2}`;
+        });
         node.attr("transform", d => `translate(${d.x},${d.y})`);
     }
 
@@ -235,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!event.active) simulation.alphaTarget(0);
         if (d.type !== 'value') { d.fx = null; d.fy = null; }
     }
-    
+
     let linkedByIndex = {};
     function updateLinkedByIndex(links) {
         linkedByIndex = {};
@@ -246,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isConnected = (a, b) => linkedByIndex[`${a.id},${b.id}`] || linkedByIndex[`${b.id},${a.id}`] || a.id === b.id;
 
     function handleMouseOver(event, d) {
-        let tooltipContent = d.type === 'value' 
+        let tooltipContent = d.type === 'value'
             ? `<b>Ценность:</b> ${d.name}`
             : `<b>${d.name}</b><br>${d.activity}`;
         if (d.type === 'mentor' && d.duplicateCount > 1) {
@@ -281,10 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
         let filteredLinks = initialLinks.filter(l => filteredNodeIds.has(l.source) && filteredNodeIds.has(l.target));
-        
+
         currentNodes = filteredNodes;
         currentLinks = filteredLinks.map(l => ({...l}));
-        
+
         const nodeMap = new Map(currentNodes.map(n => [n.id, n]));
         currentLinks.forEach(l => {
             l.source = nodeMap.get(l.source);
@@ -356,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
             searchTerm = '';
             applyCombinedFilters();
         });
-        
+
         svg.call(d3.zoom().scaleExtent([0.2, 5]).on("zoom", e => g.attr("transform", e.transform)));
 
         window.addEventListener('resize', () => {
@@ -374,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createFilterCheckboxes();
             applyCombinedFilters();
             setupEventListeners();
-            
+
             hideLoader();
             showModal(descriptionModal);
         }, 150);
