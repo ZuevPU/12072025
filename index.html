@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная Карта Наставников (D3.js)</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Загрузка карты наставников...</p>
+    </div>
+
+    <header>
+        <h1>Интерактивная Карта Наставников</h1>
+        <p>Исследуйте связи между наставниками и традиционными российскими духовно-нравственными ценностями.</p>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="search-section">
+                <h2>Поиск наставника</h2>
+                <input type="text" id="mentorSearchInput" placeholder="Введите ФИО или часть ФИО...">
+                <button id="clearSearchBtn" class="flat-button secondary">Очистить поиск</button>
+            </div>
+            <h2>Фильтры по ценностям</h2>
+            <div id="filters-container" class="filters-grid">
+                </div>
+            <div class="sidebar-actions">
+                <button id="resetFiltersBtn" class="flat-button secondary">Сбросить фильтры</button>
+                <button id="descriptionBtn" class="flat-button primary">Описание карты</button>
+            </div>
+
+
+        </aside>
+
+        <main class="main-content">
+            <svg id="network-svg"></svg>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Карта Наставников.</p>
+    </footer>
+
+    <div id="descriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button close-description-modal">&times;</span>
+            <h2>Описание Карты Наставников</h2>
+            <p>Эта интерактивная карта визуализирует связи между выдающимися наставниками и традиционными российскими духовно-нравственными ценностями, перечисленными в Указе Президента РФ №809.</p>
+            <h3>Как пользоваться:</h3>
+            <ul>
+                <li>
+                    <strong>Узлы ценностей (крупные):</strong> Представляют собой традиционные ценности.
+                </li>
+                <li>
+                    <strong>Узлы наставников (с фото):</strong> Представляют конкретных наставников.
+                </li>
+                <li>
+                    <strong>Связи:</strong> Линии от наставника к ценности показывают, что эта ценность проявляется в его деятельности.
+                    <ul>
+                        <li>
+                            <strong>Толстая сплошная линия:</strong> Указывает на <strong>основную</strong> ценность наставника.
+                        </li>
+                        <li>
+                            <strong>Тонкая пунктирная линия:</strong> Указывает на <strong>второстепенную</strong> ценность.
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Интерактивность:</strong>
+                    <ul>
+                        <li>Перетаскивайте узлы для изменения их положения.</li>
+                        <li>Используйте колесико мыши для масштабирования.</li>
+                        <li>Наведите курсор на узел, чтобы увидеть подробную информацию и подсветить связанные элементы.</li>
+                        <li>
+                            <strong>Кликните по наставнику, чтобы открыть подробную карточку.</strong>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Фильтры и Поиск:</strong> Используйте инструменты слева для фильтрации и поиска наставников на карте.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="mentorCardModal" class="modal">
+        <div class="modal-content mentor-card-content">
+            <span class="close-button close-mentor-card-modal">&times;</span>
+            <div class="mentor-card-header">
+                <img id="mentorCardPhoto" src="" alt="Фото наставника" class="mentor-card-photo">
+                <h2 id="mentorCardFIO"></h2>
+            </div>
+            <p><b class="card-label">Деятельность:</b> <span id="mentorCardActivity"></span></p>
+            <div class="mentor-card-values">
+                <b class="card-label">Связанные ценности:</b>
+                <div id="mentorCardValuesContainer" class="values-grid">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="mentors.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

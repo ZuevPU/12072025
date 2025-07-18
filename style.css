@@ -1,0 +1,422 @@
+/* Переменные для цветовой палитры и типографики */
+:root {
+    --primary-color: #0d6efd; /* Более насыщенный синий */
+    --primary-rgb: 13, 110, 253;
+    --primary-dark: #0a58ca;
+    --secondary-color: #6c757d;
+    --secondary-dark: #5a6268;
+
+    --background-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --text-color: #212529; /* Чуть темнее для лучшего контраста */
+    --light-text-color: #6c757d;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.075);
+
+    --font-family-sans: 'Inter', sans-serif;
+    --font-size-base: 16px;
+    --border-radius-base: 8px;
+}
+
+/* Общие стили */
+body {
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+}
+
+/* --- Стили для лоадера --- */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.spinner {
+    width: 56px;
+    height: 56px;
+    border: 7px solid var(--primary-color);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+#loader p {
+    font-size: 1.2em;
+    color: var(--primary-dark);
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Макет страницы */
+.container {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    gap: 20px;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    color: white;
+    margin-bottom: 5px;
+    font-size: 2.5em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+header p {
+    font-size: 1.2em;
+    opacity: 0.9;
+    margin-top: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 0 0 320px; /* Немного шире */
+    background-color: var(--surface-color);
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 40vh;
+}
+
+/* --- Улучшенные чекбоксы --- */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 5px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+.checkbox-item:hover {
+    background-color: #f0f0f0;
+}
+
+.checkbox-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.checkbox-item input[type="checkbox"]::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--primary-color);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.checkbox-item input[type="checkbox"]:checked {
+    border-color: var(--primary-color);
+}
+.checkbox-item input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+.checkbox-item input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+}
+
+.checkbox-item label {
+    font-size: 1em;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+/* --- Секция поиска --- */
+.search-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+#mentorSearchInput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#mentorSearchInput:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.2);
+    outline: none;
+}
+
+
+/* --- Улучшенные кнопки --- */
+.flat-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+.flat-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.flat-button.primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(var(--primary-rgb), 0.3);
+}
+.flat-button.secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+.flat-button.secondary:hover {
+    background-color: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+
+/* Main Content (SVG Graph) */
+.main-content {
+    flex: 1;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#network-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* D3.js Graph Styles */
+.links line {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.nodes text {
+    font-family: var(--font-family-sans);
+    fill: var(--text-color);
+    text-anchor: middle;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9em;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+
+/* Модальные окна (Modal) */
+.modal {
+    display: none; /* Изменено JS */
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    padding: 30px;
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 700px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.close-button {
+    color: var(--secondary-color);
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--text-color);
+    transform: rotate(90deg);
+}
+
+/* Стили для карточки наставника */
+.mentor-card-content {
+    max-width: 550px;
+    text-align: left;
+}
+.mentor-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 20px;
+}
+.mentor-card-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+}
+#mentorCardFIO {
+    font-size: 2em;
+    color: var(--primary-dark);
+    margin: 0;
+}
+.card-label {
+    color: var(--light-text-color);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+.values-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.value-tag {
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition: transform 0.2s;
+}
+.value-tag:hover {
+    transform: scale(1.05);
+}
+
+
+/* --- Адаптивность --- */
+@media (max-width: 992px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; flex: auto; }
+}
+
+@media (max-width: 576px) {
+    header h1 { font-size: 2em; }
+    .mentor-card-header { flex-direction: column; text-align: center; }
+    #mentorCardFIO { font-size: 1.6em; }
+}
